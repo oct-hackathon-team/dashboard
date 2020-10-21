@@ -1,53 +1,103 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.10/c3.min.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,400italic,700,700italic,900,900italic" rel="stylesheet" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.10/c3.min.js"></script>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    
+    <style>
+      li.list-group-item {
+        border: 0 none;
+      }
+    </style>
+  </head>
 <body>
 
-<h2>HTML Tables</h2>
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          Test
+        </div>
+        <div class="panel-body">
+          <div class="col-md-10">
+          <div id="chart"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+  <script>
+    var chart = c3.generate({
+  data: {
+    columns: [
+      ['data1', 100],
+      ['data2', 300],
+      ['data3', 200],
+      ['data4', 100],
+      ['data5', 300],
+      ['data6', 200]
+    ],
+    type: 'pie'
+  },
+  legend: {
+    show: false
+  },
+  tooltip: {
+    format: {
+      value: function(value, ratio) {
+        var percentFormat = d3.format('.1%');
+        var twoDecimal = d3.format('.2f');
+        return '<ul class="list-inline">' +
+          '<li><span class="badge">' + percentFormat(ratio) + '</span></li>' +
+          '<li><span class="badge">' + twoDecimal(value) + '</span></li>' +
+          '<ul>';
+      }
+    }
+  },
+});
 
-<p>HTML tables start with a table tag.</p>
-<p>Table rows start with a tr tag.</p>
-<p>Table data start with a td tag.</p>
+d3.select('.panel-body').insert('div', ':first-child')
+  .attr('class', 'legend col-md-2')
+  .insert('ul').attr('class', 'list-group')
+  .selectAll('span')
+  .data(['data1', 'data2', 'data3', 'data4', 'data5', 'data6','data7', 'data8', 'data9', 'data10', 'data11', 'data12'])
+  .enter().append('li').attr('class', 'list-group-item')
+  .append('div').attr('class', 'legend-label')
+  .attr('data-id', function(id) {
+    return id;
+  })
+  .append('div', '.legend-label')
+  .html(function(id) {
+    var data = chart.data(id);
+    return id + '&nbsp&nbsp&nbsp';
+  })
+  .on('mouseover', function(id) {
+    chart.focus(id);
+  })
+  .on('mouseout', function(id) {
+    chart.revert();
+  })
+  .insert('span', '.legend-label').attr('class', 'badge')
+  .each(function(id) {
+    d3.select(this).style('background-color', chart.color(id));
+  })
+  .html(function(id){
+    return '&nbsp&nbsp&nbsp&nbsp&nbsp'
+});
 
-<hr>
-<h2>1 Column:</h2>
-
-<table>
-  <tr>
-    <td>100</td>
-  </tr>
-</table>
-
-<hr>
-<h2>1 Row and 3 Columns:</h2>
-<table>
-  <tr>
-    <td>100</td>
-    <td>200</td>
-    <td>300</td>
-  </tr>
-</table>
-
-<hr>
-<h2>3 Rows and 3 Columns:</h2>
-<table>
-  <tr>
-    <td>100</td>
-    <td>200</td>
-    <td>300</td>
-  </tr>
-  <tr>
-    <td>400</td>
-    <td>500</td>
-    <td>600</td>
-  </tr>
-  <tr>
-    <td>700</td>
-    <td>800</td>
-    <td>900</td>
-  </tr>
-</table>
-
-<hr>
+chart.resize({width:400, height:400})
+  </script>
 
 </body>
 </html>
